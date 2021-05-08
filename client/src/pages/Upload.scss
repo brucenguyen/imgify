@@ -1,0 +1,36 @@
+#image-upload {
+    h1 {
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    h2 {
+        font-size: 1em;
+        font-weight: 600;
+    }
+
+    .list {
+        background-color: #202329;
+        border-radius: 0.5em;
+        padding: 1em;
+        margin: 1em 0em;
+
+        table {
+            margin-top: 1em;
+
+            .row-header {
+                padding-bottom: 1em;
+            }
+        }
+
+        td {
+            word-break: break-all;
+
+            button {
+                margin: 0;
+                word-break: normal;
+                margin-left: 1em;
+            }
+        }
+    }
+}

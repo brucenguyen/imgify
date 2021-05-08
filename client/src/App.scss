@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+
+* {
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Work Sans', sans-serif;
+    background: #282c34;
+    overflow-y: scroll;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    transition: all ease-in-out .25s;
+
+    &:hover, &.active {
+        text-decoration: none;
+    }
+}
+
+.btn-primary {
+    background-color: #008060;
+    border: none;
+
+    &:hover {
+        background-color: #004c3f;
+        border: none;
+    }
+
+    img {
+        filter: invert(1) brightness(1);
+    }
+}
+
+.root {
+    padding: 10em 20em 0em 20em;
+}
+
+@media(max-width: 1280px) {
+    .root {
+        padding: 10em 2em 0em 2em;
+    }
+}

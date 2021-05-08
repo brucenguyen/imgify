@@ -1,0 +1,26 @@
+#signin-page {
+    #signin-form, #register-form {
+        padding: 2em;
+        background-color: #202329;
+        border-radius: 0.5em;
+        margin-bottom: 1em;
+    }
+
+    h1 {
+        font-size: 1em;
+        margin-bottom: 1em;
+        font-weight: 600;
+    }
+
+    input {
+        margin-bottom: 1em;
+    }
+}
+
+#signin-page.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
