@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Upload from './pages/Upload';
 import Post from './pages/Post';
 import Home from './pages/Home';
+import Search from './pages/Search';
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
         <Navbar />
         <Switch>
           <Route exact path="/" component={ Home }/>
-          <Route exact path="/search" />
+          <Route exact path="/search" component={ Search } />
           <Route exact path="/submission/:submissionID" component={ Post } />
           <Route exact path="/profile/:username" component={ Profile } />
           <Route exact path="/signin" component={ Signin } />

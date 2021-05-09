@@ -2,13 +2,18 @@ export function uploadImages(title: string, keywords: string[], files: File[], c
   const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
   const formData = new FormData();
 
+  var validFile = true;
   files.forEach(file => {
     if (!validImageTypes.includes(file['type'])) {
       cb(null, "Files must be images.");
-      return;
+      validFile = false;
     }
     formData.append("images", file);
   });
+  if (!validFile) {
+    return;
+  }
+
   keywords.forEach(keyword => {
     formData.append("keywords", keyword);
   });
@@ -87,7 +92,7 @@ export function getPost(postID: number, cb: Function) {
   });
 }
 
-export function removePost(postID: number, cb: Function) {
+export function removePost(postIDs: number[], cb: Function) {
   fetch(`${process.env.REACT_APP_API_URL}/image/submission/delete`, {
     method: 'POST', 
     credentials: 'include',
@@ -95,7 +100,7 @@ export function removePost(postID: number, cb: Function) {
       'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ postID: postID })
+    body: JSON.stringify({ postID: postIDs })
   }).then(function(response) {
     response.json().then(function(json) {
       if (response.status !== 200) {
@@ -111,5 +116,31 @@ export function removePost(postID: number, cb: Function) {
   }).catch(function(err: any) {
     console.error(err);
     cb(err);
+  });
+}
+
+export function searchPost(query: string, cb: Function) {
+  fetch(`${process.env.REACT_APP_API_URL}/image/search`, {
+    method: 'POST', 
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query: query })
+  }).then(function(response) {
+    response.json().then(function(json) {
+      if (response.status !== 200) {
+        if (json) cb(null, json.message);
+      } else {
+        if (json) {
+          cb(json.posts, null);
+        } else {
+          cb(null, "Could not receive data from server.")
+        }
+      }
+    });
+  }).catch(function(err: any) {
+    console.error(err);
+    cb(null, err);
   });
 }

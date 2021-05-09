@@ -32,7 +32,7 @@ function Post(props: any) {
   function deletePost(e: any) {
     e.preventDefault();
 
-    removePost(props.match.params.submissionID, (err: any) => {
+    removePost([ props.match.params.submissionID ], (err: any) => {
       if (err) {
         window.alert(err);
       } else {

@@ -25,7 +25,7 @@ function Upload() {
   function removeKeyword(e: any, keyword: string) {
     e.preventDefault();
     const values = [...keywords];
-    const index = keywords.indexOf(keyword);
+    const index = values.indexOf(keyword);
     if (index >= 0) {
       values.splice(index, 1);
     }

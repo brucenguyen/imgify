@@ -11,10 +11,10 @@ export async function createPost(title: string, userID: number): Promise<Sequeli
     });
 }
 
-export async function deletePost(postID: number) {
+export async function deletePost(postIDs: number[]) {
     return Post.destroy({
         where: {
-            id: postID
+            id: postIDs
         }
     });
 }
@@ -59,6 +59,28 @@ export async function getPostByUser(userID: number, page: number, pageLength: nu
         },
         limit: pageLength,
         offset: pageLength * (page - 1)
+    });
+}
+
+export async function getPostByTitle(title: string) {
+    return await Post.findAll({
+        where: 
+            Sequelize.where(
+                Sequelize.fn('lower', Sequelize.col('title')),
+                'like',
+                '%' + title.toLowerCase() + '%'
+            )
+    });
+}
+
+export async function getKeyword(keyword: string) {
+    return await Keyword.findAll({
+        where: 
+            Sequelize.where(
+                Sequelize.fn('lower', Sequelize.col('keyword')),
+                'like',
+                '%' + keyword.toLowerCase() + '%'
+            )
     });
 }
 

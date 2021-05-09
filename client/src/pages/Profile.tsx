@@ -4,6 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { verifyToken } from '../services/auth';
 import { getUser } from '../services/user';
+import { removePost } from '../services/image';
 
 function Profile(props: any) {
   const pageSize = 100;
@@ -14,6 +15,7 @@ function Profile(props: any) {
   const [username, setUsername] = useState('');
   const [dateCreated, setDateCreated] = useState('');
   const [posts, setPosts] = useState<any[]>([]);
+  const [selectedPosts, setSelectedPosts] = useState<number[]>([]);
 
   function loadUser(page: number) {
     getUser(props.match.params.username, page, (data: any, err: any) => {
@@ -27,6 +29,32 @@ function Profile(props: any) {
         setMaxPage(Math.ceil(data.numPosts / pageSize));
       }
     });
+  }
+
+  function deletePosts(e: any) {
+    e.preventDefault();
+    
+    removePost(selectedPosts, (err: any) => {
+      if (err) {
+        window.alert(err);
+      } else {
+        window.alert("Posts successfully deleted");
+        loadUser(page);
+      }
+    });
+  }
+
+  function modifySelectedPosts(e: any, postID: number) {
+    if (e.target.checked) {
+      setSelectedPosts([...selectedPosts, postID]);
+    } else {
+      const values = [...selectedPosts];
+      const index = values.indexOf(postID);
+      if (index >= 0) {
+        values.splice(index, 1);
+      }
+      setSelectedPosts(values);
+    }
   }
 
   useEffect(() => {
@@ -52,8 +80,12 @@ function Profile(props: any) {
       <p>joined { dateCreated }</p>
       {
         localStorage.getItem('ACCESS_USERNAME') === props.match.params.username &&
-          <div>
+          <div className="actions">
             <Link to="/upload"><button className="btn btn-primary">Upload</button></Link>
+            {
+              selectedPosts.length > 0 &&
+                <button className="btn btn-primary" onClick={ (e) => deletePosts(e) }>Delete Selected</button>
+            }
           </div>
       }
       <div className="posts">
@@ -61,15 +93,19 @@ function Profile(props: any) {
           posts.length ? (
             posts.map(post => {
               return post.images && (
-                <Link key={ post.dateCreated } to={ `/submission/${post.postID}` }>
-                  <div className="card">
+                <div key={ post.dateCreated } className="card">
+                  {
+                    localStorage.getItem('ACCESS_USERNAME') === props.match.params.username &&
+                      <input className="image-select" type="checkbox" onChange={ (e) => modifySelectedPosts(e, post.postID) } />
+                  }
+                  <Link  to={ `/submission/${post.postID}` }>
                     {
                       post.images.length > 1 &&
                         <div className="album" />
                     }
                     <img alt={ post.title } src={ `${process.env.REACT_APP_API_URL}/image/upload/${post.images[0]}` } />
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               );
             })
           ) : (

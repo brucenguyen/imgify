@@ -30,7 +30,7 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
 
         createUser(username, password).then(() => { next(); });
     } catch(err) {
-        console.log(err);
+        console.error(err);
         return res.status(400);
     }
 }

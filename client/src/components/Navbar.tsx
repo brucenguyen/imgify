@@ -5,12 +5,22 @@ import './Navbar.scss';
 
 function Navbar() {
   const [username, setUsername] = useState('');
+  const [query, setQuery] = useState('');
   const history = useHistory();
 
   function logout(e: any) {
     localStorage.clear();
-    history.push("/");
     window.location.reload();
+  }
+
+  function searchPost(e: any) {
+    e.preventDefault();
+    if (query) {
+      history.push({
+        pathname: '/search',
+        search: `?query=${encodeURIComponent(query)}`
+      });
+    }
   }
 
   useEffect(() => {
@@ -19,15 +29,15 @@ function Navbar() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localStorage]);
+  }, []);
 
   return (
     <>
       <header>
         <nav className="navbar">
           <Link id="logo" to="/">imgify</Link>
-          <form id="search-bar" onSubmit={ (e) => console.log("TODO") }>
-            <input type="text" className="form-control rounded" id="search-input" placeholder="Search..." onChange={ (e) => console.log("TODO") } />
+          <form id="search-bar" onSubmit={ searchPost }>
+            <input type="text" className="form-control rounded" id="search-input" placeholder="Search..." onChange={ (e) => setQuery(e.target.value) } />
             <button type="submit" id="search-button" className="btn btn-primary"><img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg" alt="Search" /></button>
           </form>
           <div className="navbar-links">

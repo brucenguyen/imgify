@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import './Signin.scss';
 import { getToken } from '../services/auth';
@@ -8,7 +7,6 @@ function Signin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const history = useHistory();
 
   function login(registration: boolean, e: any) {
     e.preventDefault();

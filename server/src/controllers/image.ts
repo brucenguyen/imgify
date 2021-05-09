@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Model } from 'sequelize/types';
-import { createPost, deletePost, getImages, getKeywords, getPostById, getPostByPage, getPostCount, insertImages, insertKeywords } from '../services/image';
+import { createPost, deletePost, getImages, getKeywords, getPostById, getKeyword, getPostByPage, getPostByTitle, getPostCount, insertImages, insertKeywords } from '../services/image';
 import { getUserById } from '../services/user';
 
 export async function receiveImages(req: Request, res: Response, next: NextFunction) {
@@ -44,16 +44,62 @@ export async function receiveImages(req: Request, res: Response, next: NextFunct
     }
 }
 
+export async function searchPost(req: Request, res: Response, next: NextFunction) {
+    const query = req.body.query;
+    if (!query) {
+        return res.status(401).json({
+            message: "Can't search with an empty query"
+        })
+    }
+
+    try {
+        const titlePosts = await getPostByTitle(query);
+        const keywordPosts = await getKeyword(query);
+
+        var postIds = new Set();
+        var postQuery: Model[] = [];
+        await Promise.all(titlePosts.map(post => {
+            if (!postIds.has(post.getDataValue('id'))) {
+                postIds.add(post.getDataValue('id'));
+                postQuery.push(post)
+            }
+        }));
+        await Promise.all(keywordPosts.map(async keyword => {
+            if (!postIds.has(keyword.getDataValue('postId'))) {
+                postIds.add(keyword.getDataValue('postId'));
+                const tempPost = await getPostById(keyword.getDataValue('postId'));
+                if (tempPost) {
+                    postQuery.push(tempPost as Model);
+                }
+            }
+        }));
+
+        const post = await Promise.all(postQuery.map(async query => await getPostMetadata(query as Model)));
+
+        res.json({
+            message: 'Success',
+            posts: post
+        });
+
+        next();
+    } catch(err) {
+        console.error(err);
+        return res.status(400).json({
+            message: err
+        })
+    }
+}
+
 export async function removePost(req: Request, res: Response, next: NextFunction) {
-    const postID = req.body.postID;
-    if (!req.body.postID) {
+    const postIDs = req.body.postID;
+    if (!postIDs || !postIDs.length) {
         return res.status(401).json({
             message: "Post doesn't exist"
         })
     }
 
     try {
-        const post = await deletePost(postID);
+        const post = await deletePost(postIDs);
 
         res.json({
             message: 'Success'
@@ -61,6 +107,7 @@ export async function removePost(req: Request, res: Response, next: NextFunction
 
         next();
     } catch(err) {
+        console.error(err);
         return res.status(400).json({
             message: err
         })
@@ -69,7 +116,7 @@ export async function removePost(req: Request, res: Response, next: NextFunction
 
 export async function getPost(req: Request, res: Response, next: NextFunction) {
     const postID = req.body.postID;
-    if (!req.body.postID) {
+    if (!postID) {
         return res.status(401).json({
             message: "Post doesn't exist"
         })
@@ -91,6 +138,7 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
 
         next();
     } catch(err) {
+        console.error(err);
         return res.status(400).json({
             message: err
         })
@@ -99,7 +147,7 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
 
 export async function getPostPage(req: Request, res: Response, next: NextFunction) {
     const page = req.body.page;
-    if (!req.body.page || req.body.page < 1) {
+    if (!page || page < 1) {
         return res.status(401).json({
             message: "Can't find what you're looking for"
         })

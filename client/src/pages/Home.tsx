@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 
 import { getPage } from '../services/image';
 
-function Home(props: any) {
+function Home() {
   const pageSize = 100;
   
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [posts, setPosts] = useState<any[]>([]);
   
-  function loadPage(page: number) {
+  function loadPage() {
     getPage(page, (data: any, err: any) => {
       if (err) {
         window.alert(err);
@@ -28,13 +28,17 @@ function Home(props: any) {
       setPage(parseInt(params.get("page") as string));
     }
 
-    loadPage(page);
+    loadPage();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   return (
     <div className="root">
+      {
+        posts.length > 0 &&
+          <h1>Latest posts</h1>
+      }
       <div className="posts">
         {
           posts.length ? (
@@ -52,7 +56,7 @@ function Home(props: any) {
               );
             })
           ) : (
-            <h1>There's nothing here... :(</h1>
+            <p>There's nothing here... :(</p>
           )
         }
       </div>
