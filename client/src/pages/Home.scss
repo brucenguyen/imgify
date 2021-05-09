@@ -1,0 +1,46 @@
+.posts {
+    margin-top: 2em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+
+    .card {
+        background: none;
+
+        .album {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+
+            background-image: url("https://www.nicepng.com/png/full/127-1276180_photo-album-icon-png-icon-logo-png-album.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+
+            filter: brightness(1) invert(1);
+            mix-blend-mode: difference;
+            
+            width: 40px;
+            height: 40px;
+        }
+
+        img {
+            height: 20rem;
+            object-fit: cover;
+        }
+    }
+}
+
+.page-control {
+    margin-top: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    p {
+        margin: 0;
+    }
+
+    button {
+        margin-left: 2em;
+    }
+}

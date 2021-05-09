@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import './Signin.scss';
@@ -12,11 +12,16 @@ function Signin() {
 
   function login(registration: boolean, e: any) {
     e.preventDefault();
+
+    if (registration && password !== passwordConfirm) {
+      window.alert("Passwords don't match");
+      return;
+    }
+
     getToken(username, password, registration, (err: string) => {
       if (err) {
         window.alert(err);
       } else {
-        history.push("/");
         window.location.reload();
       }
     })

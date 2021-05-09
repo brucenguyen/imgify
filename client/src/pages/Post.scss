@@ -1,0 +1,24 @@
+.images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-top: 2em;
+
+    img {
+        max-width: 100%;
+        object-fit: contain;
+        margin: 1em 0em;
+    }
+}
+
+.keywords {
+    margin-top: 2em;
+
+    h2 {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin: 0;
+    }
+}

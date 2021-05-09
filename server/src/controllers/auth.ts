@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import { validateUser } from '../services/auth';
+import { getUser } from '../services/user';
 
 export async function getToken(req: Request, res: Response, next: NextFunction) {
     if (!process.env.ACCESS_TOKEN_SECRET) {
@@ -21,11 +22,9 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
         }
     
         const payload = {
-            user: {
-                userID: user.getDataValue('userID'),
-                username: user.getDataValue('username'),
-                dateCreated: user.getDataValue('dateCreated')
-            }
+            userID: user.getDataValue('id'),
+            username: user.getDataValue('username'),
+            dateCreated: user.getDataValue('createdAt')
         }
         
         const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
@@ -58,8 +57,14 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
                     message: 'Session expired.'
                 });
             } else {
-                res.locals.user = user;
-                next();
+                if (!user || !getUser((user as any).username)) {
+                    res.status(401).json({
+                        message: 'Session expired.'
+                    });
+                } else {
+                    res.locals.user = user;
+                    next();
+                }
             }
         });
     }

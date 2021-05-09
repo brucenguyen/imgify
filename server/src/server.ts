@@ -24,6 +24,8 @@ app.use(cors({
     credentials: true
 }));
 
+app.use('/image/upload', express.static('uploads'));
+
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/image', imageRouter);

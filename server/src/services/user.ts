@@ -12,6 +12,14 @@ export async function getUser(username: string): Promise<Sequelize.Model | null>
     });
 }
 
+export async function getUserById(userID: number): Promise<Sequelize.Model | null> {
+    return await User.findOne({
+        where: {
+            id: userID
+        }
+    });
+}
+
 export async function createUser(username: string, password: string): Promise<any> {
     const hash = await bcrypt.hash(password, 10)
 

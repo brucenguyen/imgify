@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 
 import { authenticateToken } from '../controllers/auth';
-import { receiveImages } from '../controllers/image';
+import { receiveImages, getPost, removePost, getPostPage } from '../controllers/image';
 
 export const imageRouter = Router();
 
@@ -16,4 +16,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+imageRouter.post('/submission', getPost);
+imageRouter.post('/submission/all', getPostPage);
+imageRouter.post('/submission/delete', authenticateToken, removePost);
 imageRouter.post('/upload', authenticateToken, upload.array('images'), receiveImages);
