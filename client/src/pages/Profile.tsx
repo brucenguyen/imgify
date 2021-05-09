@@ -26,7 +26,7 @@ function Profile(props: any) {
         setUsername(data.username);
         setDateCreated(data.dateCreated);
         setPosts(data.posts);
-        setMaxPage(Math.ceil(data.numPosts / pageSize));
+        setMaxPage(Math.max(Math.ceil(data.numPosts / pageSize), 1));
       }
     });
   }
@@ -39,6 +39,7 @@ function Profile(props: any) {
         window.alert(err);
       } else {
         window.alert("Posts successfully deleted");
+        setSelectedPosts([]);
         loadUser(page);
       }
     });
@@ -114,7 +115,7 @@ function Profile(props: any) {
         }
       </div>
       <div className="page-control">
-        <p>Page { page }</p>
+        <p>Page { page } of { maxPage }</p>
         {
           page > 1 &&
             <Link to={ `/profile/${username}?page=${page-1}` }><button className="btn btn-primary" onClick={ (e) => setPage(page - 1) }>Prev</button></Link>

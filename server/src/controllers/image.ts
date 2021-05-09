@@ -85,20 +85,37 @@ export async function searchPost(req: Request, res: Response, next: NextFunction
     } catch(err) {
         console.error(err);
         return res.status(400).json({
-            message: err
+            message: (err instanceof Error) ? err.message : err
         })
     }
 }
 
 export async function removePost(req: Request, res: Response, next: NextFunction) {
-    const postIDs = req.body.postID;
+    const postIDs: number[] = req.body.postID;
     if (!postIDs || !postIDs.length) {
         return res.status(401).json({
             message: "Post doesn't exist"
         })
     }
 
+    const userID: number = res.locals.user.userID;
+
     try {
+        const verifyPosts = await Promise.all(postIDs.map(async postID => {
+            const postQuery = await getPostById(postID);
+            if (postQuery && postQuery.getDataValue('userId') !== userID) {
+                throw new Error("Tried to delete another user's post.");
+            } else {
+                return postID;
+            }
+        })).catch((err) => {
+            return err;
+        });
+
+        if (verifyPosts instanceof Error) {
+            throw verifyPosts;
+        }
+
         const post = await deletePost(postIDs);
 
         res.json({
@@ -109,7 +126,7 @@ export async function removePost(req: Request, res: Response, next: NextFunction
     } catch(err) {
         console.error(err);
         return res.status(400).json({
-            message: err
+            message: (err instanceof Error) ? err.message : err
         })
     }
 }
@@ -140,7 +157,7 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
     } catch(err) {
         console.error(err);
         return res.status(400).json({
-            message: err
+            message: (err instanceof Error) ? err.message : err
         })
     }
 }
@@ -169,7 +186,7 @@ export async function getPostPage(req: Request, res: Response, next: NextFunctio
     } catch(err) {
         console.error(err);
         return res.status(400).json({
-            message: err
+            message: (err instanceof Error) ? err.message : err
         })
     } 
 }

@@ -17,7 +17,7 @@ function Home() {
         window.alert(err);
       } else {
         setPosts(data.posts);
-        setMaxPage(Math.ceil(data.numPosts / pageSize));
+        setMaxPage(Math.max(Math.ceil(data.numPosts / pageSize), 1));
       }
     });
   }
@@ -61,7 +61,7 @@ function Home() {
         }
       </div>
       <div className="page-control">
-        <p>Page { page }</p>
+        <p>Page { page } of { maxPage }</p>
         {
           page > 1 &&
             <Link to={ `?page=${page-1}` }><button className="btn btn-primary" onClick={ (e) => setPage(page - 1) }>Prev</button></Link>

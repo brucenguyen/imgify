@@ -31,7 +31,9 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
         createUser(username, password).then(() => { next(); });
     } catch(err) {
         console.error(err);
-        return res.status(400);
+        return res.status(400).json({
+            message: (err instanceof Error) ? err.message : err
+        })
     }
 }
 
@@ -42,8 +44,11 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
     try {
         await updatePassword(username, password);
         next();
-    } catch (err) {
-        next(err);
+    } catch(err) {
+        console.error(err);
+        return res.status(400).json({
+            message: (err instanceof Error) ? err.message : err
+        })
     }
 }
 
@@ -77,8 +82,9 @@ export async function getUserMetadata(req: Request, res: Response, next: NextFun
             posts: post
         })
     } catch(err) {
+        console.error(err);
         return res.status(400).json({
-            message: err
+            message: (err instanceof Error) ? err.message : err
         })
     }
 }

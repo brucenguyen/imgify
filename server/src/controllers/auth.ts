@@ -36,9 +36,11 @@ export async function getToken(req: Request, res: Response, next: NextFunction) 
         })
     
         next();
-    } catch (err) {
+    } catch(err) {
         console.error(err);
-        return res.status(400);
+        return res.status(400).json({
+            message: (err instanceof Error) ? err.message : err
+        })
     }
 }
 
